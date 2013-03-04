@@ -3,7 +3,7 @@ import os.path
 import ConfigParser
 from subprocess import call
 
-libname = 'stmstandardperiphlib'
+libname = 'stmstandardperiph'
 
 defines = ['STM32F10X_CL']
 
@@ -57,7 +57,13 @@ if autoscan_includes:
 
 env['CPPPATH'] = include_dirs
 
+full_lib_name = "lib{0}.a".format(libname)
+
 env.Library(target = libname, source = source_files)
 
-dumpasm = env.Alias('dumpasm', 'cantaloupe.elf', prefix + "objdump --disassemble cantaloupe.elf > cantaloupe.asm")
+dumpasm = env.Alias('dumpasm',
+                    full_lib_name,
+                    "{0}objdump --disassemble {1} > {2}.asm".format(prefix,
+                                                                    full_lib_name,
+                                                                    libname))
 AlwaysBuild(dumpasm)
