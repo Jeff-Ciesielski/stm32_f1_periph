@@ -1,0 +1,6 @@
+*.d
+*.o
+/Libraries/cscope.files
+/Libraries/cscope.out
+*.a
+/.sconsign.dblite
