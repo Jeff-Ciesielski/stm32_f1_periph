@@ -9,6 +9,8 @@ Import('prefix')
 libname = 'stm_spl'
 full_lib_name = "lib{0}.a".format(libname)
 
+include_dirs = list()
+
 def find_source_files(file_list):
     for obj in os.walk('.'):
         for fil in obj[2]:
@@ -23,6 +25,12 @@ find_source_files(source_files)
 startup_file = './CMSIS/CM3/DeviceSupport/ST/STM32F10x/startup/gcc_ride7/startup_{0}.s'.format(env['MCU_FAMILY'].lower())
 
 source_files.append(startup_file)
+
+include_dirs.append('./STM32F10x_StdPeriph_Driver/inc')
+include_dirs.append('./CMSIS/CM3/DeviceSupport/ST/STM32F10x')
+include_dirs.append('./CMSIS/CM3/CoreSupport')
+
+env['CPPPATH'] = include_dirs
 env.Library(target = '../{0}_{1}'.format(libname ,env['MCU_FAMILY'].lower()),
             source = source_files)
 

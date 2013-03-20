@@ -11,8 +11,6 @@ mcu_families = ['STM32F10X_LD',
                 'STM32F10X_CL']
 
 #these are in respect to the 'Libraries' folder
-include_dirs = ['./STM32F10x_StdPeriph_Driver/inc',
-                './CMSIS/CM3/DeviceSupport/ST/STM32F10x',]
 
 prefix = 'arm-none-eabi-'
 arch_flags = ' -mthumb -mcpu=cortex-m3 -msoft-float '
@@ -34,8 +32,7 @@ for i in range(len(mcu_families)):
                             AS =      prefix + 'as',
                             OBJCOPY = prefix + 'objcopy',
                             OBJDUMP = prefix + 'objdump',
-                            CCFLAGS = cc_flags,
-                            CPPPATH = include_dirs))
+                            CCFLAGS = cc_flags))
     envs[i]['MCU_FAMILY'] = family
     envs[i]['CPPDEFINES'] = defines + [family]
 
