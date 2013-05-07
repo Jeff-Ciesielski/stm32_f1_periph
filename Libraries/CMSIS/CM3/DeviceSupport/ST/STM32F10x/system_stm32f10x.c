@@ -173,25 +173,6 @@ __I uint8_t AHBPrescTable[16] = {0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 6, 7, 8, 9}
   * @{
   */
 
-static void SetSysClock(void);
-
-#ifdef SYSCLK_FREQ_HSE
-  static void SetSysClockToHSE(void);
-#elif defined SYSCLK_FREQ_24MHz
-  static void SetSysClockTo24(void);
-#elif defined SYSCLK_FREQ_36MHz
-  static void SetSysClockTo36(void);
-#elif defined SYSCLK_FREQ_48MHz
-  static void SetSysClockTo48(void);
-#elif defined SYSCLK_FREQ_56MHz
-  static void SetSysClockTo56(void);  
-#elif defined SYSCLK_FREQ_72MHz
-  static void SetSysClockTo72(void);
-#endif
-
-#ifdef DATA_IN_ExtSRAM
-  static void SystemInit_ExtMemCtl(void); 
-#endif /* DATA_IN_ExtSRAM */
 
 /**
   * @}
@@ -256,10 +237,6 @@ void SystemInit (void)
     SystemInit_ExtMemCtl(); 
   #endif /* DATA_IN_ExtSRAM */
 #endif 
-
-  /* Configure the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers */
-  /* Configure the Flash Latency cycles and enable prefetch buffer */
-  SetSysClock();
 
 #ifdef VECT_TAB_SRAM
   SCB->VTOR = SRAM_BASE | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM. */
@@ -412,37 +389,11 @@ void SystemCoreClockUpdate (void)
 }
 
 /**
-  * @brief  Configures the System clock frequency, HCLK, PCLK2 and PCLK1 prescalers.
-  * @param  None
-  * @retval None
-  */
-static void SetSysClock(void)
-{
-#ifdef SYSCLK_FREQ_HSE
-  SetSysClockToHSE();
-#elif defined SYSCLK_FREQ_24MHz
-  SetSysClockTo24();
-#elif defined SYSCLK_FREQ_36MHz
-  SetSysClockTo36();
-#elif defined SYSCLK_FREQ_48MHz
-  SetSysClockTo48();
-#elif defined SYSCLK_FREQ_56MHz
-  SetSysClockTo56();  
-#elif defined SYSCLK_FREQ_72MHz
-  SetSysClockTo72();
-#endif
- 
- /* If none of the define above is enabled, the HSI is used as System clock
-    source (default after reset) */ 
-}
-
-/**
   * @brief  Setup the external memory controller. Called in startup_stm32f10x.s 
   *          before jump to __main
   * @param  None
   * @retval None
   */ 
-#ifdef DATA_IN_ExtSRAM
 /**
   * @brief  Setup the external memory controller. 
   *         Called in startup_stm32f10x_xx.s/.c before jump to main.
@@ -487,9 +438,7 @@ void SystemInit_ExtMemCtl(void)
   FSMC_Bank1->BTCR[4] = 0x00001011;
   FSMC_Bank1->BTCR[5] = 0x00000200;
 }
-#endif /* DATA_IN_ExtSRAM */
 
-#ifdef SYSCLK_FREQ_HSE
 /**
   * @brief  Selects HSE as System clock source and configure HCLK, PCLK2
   *         and PCLK1 prescalers.
@@ -497,7 +446,7 @@ void SystemInit_ExtMemCtl(void)
   * @param  None
   * @retval None
   */
-static void SetSysClockToHSE(void)
+void SetSysClockToHSE(void)
 {
   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
   
@@ -568,7 +517,7 @@ static void SetSysClockToHSE(void)
          configuration. User can add here some code to deal with this error */
   }  
 }
-#elif defined SYSCLK_FREQ_24MHz
+
 /**
   * @brief  Sets System clock frequency to 24MHz and configure HCLK, PCLK2 
   *         and PCLK1 prescalers.
@@ -576,7 +525,7 @@ static void SetSysClockToHSE(void)
   * @param  None
   * @retval None
   */
-static void SetSysClockTo24(void)
+void SetSysClockTo24(void)
 {
   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
   
@@ -672,7 +621,8 @@ static void SetSysClockTo24(void)
          configuration. User can add here some code to deal with this error */
   } 
 }
-#elif defined SYSCLK_FREQ_36MHz
+
+#if !defined (STM32F10X_LD_VL) && !(defined STM32F10X_MD_VL) && !(defined STM32F10X_HD_VL)
 /**
   * @brief  Sets System clock frequency to 36MHz and configure HCLK, PCLK2 
   *         and PCLK1 prescalers. 
@@ -680,7 +630,7 @@ static void SetSysClockTo24(void)
   * @param  None
   * @retval None
   */
-static void SetSysClockTo36(void)
+void SetSysClockTo36(void)
 {
   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
   
@@ -773,7 +723,7 @@ static void SetSysClockTo36(void)
          configuration. User can add here some code to deal with this error */
   } 
 }
-#elif defined SYSCLK_FREQ_48MHz
+
 /**
   * @brief  Sets System clock frequency to 48MHz and configure HCLK, PCLK2 
   *         and PCLK1 prescalers. 
@@ -781,7 +731,7 @@ static void SetSysClockTo36(void)
   * @param  None
   * @retval None
   */
-static void SetSysClockTo48(void)
+void SetSysClockTo48(void)
 {
   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
   
@@ -874,7 +824,6 @@ static void SetSysClockTo48(void)
   } 
 }
 
-#elif defined SYSCLK_FREQ_56MHz
 /**
   * @brief  Sets System clock frequency to 56MHz and configure HCLK, PCLK2 
   *         and PCLK1 prescalers. 
@@ -882,7 +831,7 @@ static void SetSysClockTo48(void)
   * @param  None
   * @retval None
   */
-static void SetSysClockTo56(void)
+void SetSysClockTo56(void)
 {
   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
   
@@ -976,7 +925,6 @@ static void SetSysClockTo56(void)
   } 
 }
 
-#elif defined SYSCLK_FREQ_72MHz
 /**
   * @brief  Sets System clock frequency to 72MHz and configure HCLK, PCLK2 
   *         and PCLK1 prescalers. 
@@ -984,7 +932,7 @@ static void SetSysClockTo56(void)
   * @param  None
   * @retval None
   */
-static void SetSysClockTo72(void)
+void SetSysClockTo72(void)
 {
   __IO uint32_t StartUpCounter = 0, HSEStatus = 0;
   
@@ -1078,8 +1026,7 @@ static void SetSysClockTo72(void)
          configuration. User can add here some code to deal with this error */
   }
 }
-#endif
-
+#endif /*Excludes value line devices */
 /**
   * @}
   */

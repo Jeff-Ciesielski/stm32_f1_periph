@@ -76,8 +76,18 @@ extern uint32_t SystemCoreClock;          /*!< System Clock Frequency (Core Cloc
   * @{
   */
   
-extern void SystemInit(void);
-extern void SystemCoreClockUpdate(void);
+void SystemInit(void);
+void SystemCoreClockUpdate(void);
+void SetSysClockToHSE(void);
+void SetSysClockTo24(void);
+
+#if !defined (STM32F10X_LD_VL) && !(defined STM32F10X_MD_VL) && !(defined STM32F10X_HD_VL)
+void SetSysClockTo36(void);
+void SetSysClockTo48(void);
+void SetSysClockTo56(void);  
+void SetSysClockTo72(void);
+void SystemInit_ExtMemCtl(void); 
+#endif
 /**
   * @}
   */
