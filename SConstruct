@@ -37,5 +37,5 @@ for i in range(len(mcu_families)):
     envs[i]['CPPDEFINES'] = defines + [family]
 
 for env in envs:
-    env.SConscript('Libraries/SConscript', variant_dir='build/.{0}'.format(env['MCU_FAMILY'].lower()),
+    env.SConscript('Libraries/SConscript', variant_dir='libs/.{0}'.format(env['MCU_FAMILY'].lower()),
                    duplicate=0, exports='env prefix')
